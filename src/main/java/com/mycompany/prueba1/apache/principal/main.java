@@ -11,8 +11,8 @@ public class main {
     public static void main(String[] args) {
         
         UsuarioDAO dao = new UsuarioDAO();
-        dao.insertar(new Usuario("Carlos", "1234"));
-        dao.insertar(new Usuario("Matias", "abdcd"));
+        dao.insertar(new Usuario( 2222, "Carlos", "1234", true));
+        dao.insertar(new Usuario( 4444, "Matias", "abdcd", false));
         
         List<Usuario> lista = dao.listar();
         

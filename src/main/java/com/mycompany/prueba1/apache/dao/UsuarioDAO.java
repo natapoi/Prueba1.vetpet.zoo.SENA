@@ -9,6 +9,27 @@ import java.util.List;
 
 public class UsuarioDAO { 
     
+public boolean actualizarEstado(int idUsuario, Boolean nuevoEstado, String rolEjecutor) {
+  if (!"ADMIN".equals(rolEjecutor)) {
+      System.out.println("ERROR DAO: Permiso denegado. Solo administradores pueden cambiar estados");
+      return false;
+  }  
+   String sql = "UPDATE usuarios SET activo=? WHERE id = ?";
+  try (Connection con = ConexionBD.obetenerConexion();
+       PreparedStatement ps = con.prepareStatement(sql)) {
+      
+      ps.setBoolean(1, nuevoEstado);
+      ps.setInt(2, idUsuario);
+      
+      int filasAfectadas = ps.executeUpdate();
+      return filasAfectadas > 0; 
+              
+  } catch (SQLException e) {
+      
+      System.out.println("Error de base de datos: " + e.getMessage());
+  }   return false;
+}
+    
 public void insertar(Usuario usuario) {
     
 String sql = "INSERT INTO usuarios (nombre, clave) VALUES (?, ?)";
@@ -44,10 +65,8 @@ public List<Usuario> listar() {
         
         while (rs.next()) {
            
-            Usuario usuario = new Usuario(rs.getString("nombre"), rs.getString("clave"));
+            Usuario usuario = new Usuario(rs.getInt("id"), rs.getString("nombre"), rs.getString("clave"), rs.getBoolean("activo"));
             
-            usuario.setNombre(rs.getString("nombre"));
-            usuario.setClave(rs.getString("clave"));
            
             lista.add(usuario);
         }
